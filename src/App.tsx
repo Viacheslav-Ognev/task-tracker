@@ -6,9 +6,14 @@ function App() {
     { id: 2, title: "Выучить React", days: 1 },
   ]);
 
+const handleDelete = ((idToRemove:number) => {
+  const actualTasks = tasks.filter(task => task.id !== idToRemove);
+  setTasks(actualTasks);
+});
+
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1 style={{textAlign: "center"}}> Трекер Задач 🎯 </h1>
+      <h1 style={{ textAlign: "center" }}> Трекер Задач 🎯 </h1>
 
       <div>
         {tasks.map((task) => {
@@ -22,15 +27,17 @@ function App() {
                 borderRadius: "8px",
               }}
             >
-              <h2 > {task.title}</h2>
+              <h2> {task.title}</h2>
               <p> Повторять раз в {task.days} дня</p>
-              <button> Удалить </button>
+              <button onClick={() => handleDelete(task.id)}> 
+              Удалить 
+              </button>
             </div>
           );
         })}
       </div>
     </div>
   );
-}
+};
 
 export default App;
