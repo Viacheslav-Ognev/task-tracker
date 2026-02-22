@@ -7,8 +7,8 @@ function App() {
   ]);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif"}}>
-      <h1> Трекер Задач 🎯 </h1>
+    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+      <h1 style={{textAlign: "center"}}> Трекер Задач 🎯 </h1>
 
       <div>
         {tasks.map((task) => {
@@ -20,12 +20,11 @@ function App() {
                 padding: "10px",
                 marginBottom: "10px",
                 borderRadius: "8px",
-              }}>
-
-              <h2> {task.title}</h2>
+              }}
+            >
+              <h2 > {task.title}</h2>
               <p> Повторять раз в {task.days} дня</p>
               <button> Удалить </button>
-
             </div>
           );
         })}
