@@ -1,24 +1,22 @@
 import { useState } from "react";
 
+type Task = {
+  id: number;
+  title: string | number;
+  days: number;
+  isDone: boolean;
+};
+
 function App() {
   //определение типов в массиве
-  interface tasks {
-    id: number;
-    title: string | number;
-    days: number;
-    isDone: boolean;
-  }
+
 
   // главный масив
-  const [tasks, setTasks] = useState([
-    {
-      id: tasks.length + 1,
-      title: "Помыть лоток коту",
-      days: 2,
-      isDone: false,
-    },
-    { id: tasks.length + 1, title: "Выучить React", days: 1, isDone: false },
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: 1, title: "Помыть лоток коту", days: 2, isDone: false },
+    { id: 2, title: "Выучить React", days: 1, isDone: true },
   ]);
+
   // массив для инпута
   const [inputValue, setInputValue] = useState("");
 
@@ -28,27 +26,25 @@ function App() {
     setTasks(actualTasks);
   };
 
-  // функция добавления задания
-  /*
-const addTasks = ((titleAdd:string) => {
-  const newTask = tasks.push(titleAdd);
-  setTasks(newTask);
-});
-*/
+  // функция добавления задания с очищением инпута 
   const handleAddTask = () => {
     if (inputValue.trim() === "") return;
+
+      const newTask = {
+        id: Date.now(),
+        title: inputValue,
+        days: 1,
+        isDone: false,
+      };
+
+      setTasks([...tasks, newTask]);
+      // очищаем поле инпут
+      setInputValue("");
   };
 
-  const newTask = {
-    id: Date.now(),
-    title: inputValue,
-    days: 1,
-    isDone: false,
-  };
 
-  setTasks([...tasks, newTask]);
-  // очищаем поле инпут
-  setInputValue("");
+
+
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
@@ -71,18 +67,19 @@ const addTasks = ((titleAdd:string) => {
         {tasks.map((task) => {
           return (
             <div
-              key={tasks.id}
+              key={task.id}
               style={{
                 border: "1px solid gray",
                 padding: "10px",
                 marginBottom: "10px",
                 borderRadius: "8px",
+                backgroundColor: task.isDone ? "#e6ffe6" : "white"
               }}
             >
               <h2> {task.title}</h2>
               <p> Повторять раз в {task.days} дня</p>
               <button onClick={() => handleDelete(task.id)}>Удалить</button>
-              <p> {task.isDone} </p>
+              <p> {task.isDone ? "Выполнено ✅" : "В процессе ⏳"} </p>
             </div>
           );
         })}
