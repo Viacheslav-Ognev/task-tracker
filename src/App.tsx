@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TaskCard from "./components/TaskCard";
 
-
-// обьявляем типы для массива 
+// обьявляем типы для массива
 type Task = {
   id: number;
   title: string | number;
@@ -13,15 +12,23 @@ type Task = {
 function App() {
   //определение типов в массиве
 
-
   // главный масив
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Помыть лоток коту", days: 2, isDone: false },
-    { id: 2, title: "Выучить React", days: 1, isDone: true },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem("tracker_tasks");
+    if (savedTasks) {
+      return JSON.parse(savedTasks);
+    }
+    return [];
+  });
 
   // массив для инпута
   const [inputValue, setInputValue] = useState("");
+
+  // локальное хранилище
+  useEffect(() => {
+    const packedTasks = JSON.stringify(tasks);
+    localStorage.setItem("tracker_tasks", packedTasks);
+  }, [tasks]);
 
   // функция удаления
   const handleDelete = (idToRemove: number) => {
@@ -29,31 +36,31 @@ function App() {
     setTasks(actualTasks);
   };
 
-  // функция добавления задания с очищением инпута 
+  // функция добавления задания с очищением инпута
   const handleAddTask = () => {
     if (inputValue.trim() === "") return;
 
-      const newTask = {
-        id: Date.now(),
-        title: inputValue,
-        days: 1,
-        isDone: false,
-      };
+    const newTask = {
+      id: Date.now(),
+      title: inputValue,
+      days: 1,
+      isDone: false,
+    };
 
-      setTasks([...tasks, newTask]);
-      // очищаем поле инпут
-      setInputValue("");
+    setTasks([...tasks, newTask]);
+    // очищаем поле инпут
+    setInputValue("");
   };
-// функция смены задачи сделанна\не сделанна 
+  // функция смены задачи сделанна\не сделанна
   const handleToggleStatus = (idToToggle: number) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === idToToggle) {
-        return{...task, isDone:!task.isDone};
-      } 
+        return { ...task, isDone: !task.isDone };
+      }
       return task;
     });
     setTasks(updatedTasks);
-  }
+  };
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
@@ -75,10 +82,10 @@ function App() {
       <div>
         {tasks.map((task) => (
           <TaskCard
-          key={task.id}
-          task={task}
-          onDelete={handleDelete}
-          onToggle={handleToggleStatus}
+            key={task.id}
+            task={task}
+            onDelete={handleDelete}
+            onToggle={handleToggleStatus}
           />
         ))}
       </div>
