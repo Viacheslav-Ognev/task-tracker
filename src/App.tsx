@@ -1,5 +1,8 @@
 import { useState } from "react";
+import TaskCard from "./components/TaskCard";
 
+
+// обьявляем типы для массива 
 type Task = {
   id: number;
   title: string | number;
@@ -41,10 +44,16 @@ function App() {
       // очищаем поле инпут
       setInputValue("");
   };
-
-
-
-
+// функция смены задачи сделанна\не сделанна 
+  const handleToggleStatus = (idToToggle: number) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === idToToggle) {
+        return{...task, isDone:!task.isDone};
+      } 
+      return task;
+    });
+    setTasks(updatedTasks);
+  }
 
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
@@ -64,25 +73,14 @@ function App() {
       </div>
 
       <div>
-        {tasks.map((task) => {
-          return (
-            <div
-              key={task.id}
-              style={{
-                border: "1px solid gray",
-                padding: "10px",
-                marginBottom: "10px",
-                borderRadius: "8px",
-                backgroundColor: task.isDone ? "#e6ffe6" : "white"
-              }}
-            >
-              <h2> {task.title}</h2>
-              <p> Повторять раз в {task.days} дня</p>
-              <button onClick={() => handleDelete(task.id)}>Удалить</button>
-              <p> {task.isDone ? "Выполнено ✅" : "В процессе ⏳"} </p>
-            </div>
-          );
-        })}
+        {tasks.map((task) => (
+          <TaskCard
+          key={task.id}
+          task={task}
+          onDelete={handleDelete}
+          onToggle={handleToggleStatus}
+          />
+        ))}
       </div>
     </div>
   );
