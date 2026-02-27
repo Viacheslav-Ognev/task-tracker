@@ -23,6 +23,7 @@ function App() {
 
   // массив для инпута
   const [inputValue, setInputValue] = useState("");
+  const [daysValue, setDaysValue] = useState(1);
 
   // локальное хранилище
   useEffect(() => {
@@ -43,14 +44,16 @@ function App() {
     const newTask = {
       id: Date.now(),
       title: inputValue,
-      days: 1,
+      days: daysValue,
       isDone: false,
     };
 
     setTasks([...tasks, newTask]);
     // очищаем поле инпут
     setInputValue("");
+    setDaysValue(1);
   };
+
   // функция смены задачи сделанна\не сделанна
   const handleToggleStatus = (idToToggle: number) => {
     const updatedTasks = tasks.map((task) => {
@@ -63,18 +66,28 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1 style={{ textAlign: "center" }}> Трекер Задач 🎯 </h1>
+    <div className=" pb-5 font-sans max-w-xl mx-auto">
+      <h1 className=" text-4xl text-blue-600 font-bold mb-8 text-center"> Трекер Задач 🎯 </h1>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className=" flex gap-2 mb-6">
         <input
           type="text"
           placeholder="Что нужно сделать?"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          style={{ padding: "8px", marginRight: "10px", width: "200px" }}
+          className=" border border-gray-300 rounded-xs px-3 w-full"
         />
-        <button onClick={handleAddTask} style={{ padding: "8px" }}>
+        <input 
+        type="number"
+        min="1"
+        value={daysValue}
+        onChange={(e) => setDaysValue(Number(e.target.value))}
+        className=" border border-gray-300 rounded-xs px-3 w-20"
+         />
+        <button 
+        onClick={handleAddTask} 
+        className=" bg-blue-500 text-white px-4 py-2 rounded-xs hover:bg-blue-600"
+        >
           Добавить
         </button>
       </div>
