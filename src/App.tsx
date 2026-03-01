@@ -68,10 +68,25 @@ function App() {
           count: task.count + 1,
           nextDate: addDays(task.nextDate, Number(task.days)).getTime(),
         };
-      };
+      }
       return task;
     });
     setTasks(updatedTasks);
+  };
+
+// изменяем задачу 
+  const handleEditeTask = (
+    idTask: number,
+    newTitle: string | number,
+    newDays: number
+  ) => {
+    const editTask = tasks.map((task) => {
+      if (task.id === idTask) {
+        return { ...task, title: newTitle, days: newDays };
+      };
+      return task;
+    });
+    setTasks(editTask);
   };
 
   return (
@@ -111,6 +126,7 @@ function App() {
             task={task}
             onDelete={handleDelete}
             onComplete={handleCompleteTask}
+            onEdit = {handleEditeTask}
           />
         ))}
       </div>
