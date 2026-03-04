@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TaskCard from "./components/TaskCard";
+import ModalAddTask from "./components/ModalAddTask";
 import { addDays } from "date-fns";
 
 // обьявляем типы для массива
@@ -13,7 +14,8 @@ export type Task = {
 };
 
 function App() {
-  //определение типов в массиве
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // главный масив
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -23,10 +25,6 @@ function App() {
     }
     return [];
   });
-
-  // массив для инпута
-  const [inputValue, setInputValue] = useState("");
-  const [daysValue, setDaysValue] = useState(1);
 
   // локальное хранилище
   useEffect(() => {
@@ -41,22 +39,17 @@ function App() {
   };
 
   // функция добавления задания с очищением инпута
-  const handleAddTask = () => {
-    if (inputValue.trim() === "") return;
-
+  const handleAddTask = (newTitle: string, newDays: number) => {
     const newTask = {
       count: 0,
       id: Date.now(),
-      title: inputValue,
-      days: daysValue,
+      title: newTitle,
+      days: newDays,
       isDone: false,
-      nextDate: addDays(new Date(), daysValue).getTime(),
+      nextDate: addDays(new Date(), newDays).getTime(),
     };
 
     setTasks([...tasks, newTask]);
-    // очищаем поле инпут
-    setInputValue("");
-    setDaysValue(1);
   };
 
   // функция смены задачи сделанна\не сделанна
@@ -74,7 +67,7 @@ function App() {
     setTasks(updatedTasks);
   };
 
-// изменяем задачу 
+  // изменяем задачу
   const handleEditeTask = (
     idTask: number,
     newTitle: string | number,
@@ -83,7 +76,7 @@ function App() {
     const editTask = tasks.map((task) => {
       if (task.id === idTask) {
         return { ...task, title: newTitle, days: newDays };
-      };
+      }
       return task;
     });
     setTasks(editTask);
@@ -92,32 +85,8 @@ function App() {
   return (
     <div className=" pb-5 font-sans max-w-xl mx-auto">
       <h1 className=" text-4xl text-blue-600 font-bold mb-8 text-center">
-        {" "}
-        Трекер Задач 🎯{" "}
+        Трекер Задач 🎯
       </h1>
-
-      <div className=" flex gap-2 mb-6">
-        <input
-          type="text"
-          placeholder="Что нужно сделать?"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className=" border border-gray-300 rounded-xs px-3 w-full"
-        />
-        <input
-          type="number"
-          min="1"
-          value={daysValue}
-          onChange={(e) => setDaysValue(Number(e.target.value))}
-          className=" border border-gray-300 rounded-xs px-3 w-20"
-        />
-        <button
-          onClick={handleAddTask}
-          className=" bg-blue-500 text-white px-4 py-2 rounded-xs hover:bg-blue-600"
-        >
-          Добавить
-        </button>
-      </div>
 
       <div>
         {tasks.map((task) => (
@@ -126,10 +95,26 @@ function App() {
             task={task}
             onDelete={handleDelete}
             onComplete={handleCompleteTask}
-            onEdit = {handleEditeTask}
+            onEdit={handleEditeTask}
           />
         ))}
       </div>
+
+      <div className=" flex justify-center mb-8">
+        <button onClick={() => setIsModalOpen(true)}
+        className=" bg-blue-600 text-white font-bold py-2 px-20 rounded-full shadow-lg hover:scale-105 transition-transform"
+        >  
+          + Add
+        </button>
+      </div>
+
+        {isModalOpen && (
+          <ModalAddTask 
+            onClose={() => setIsModalOpen(false)}
+            onAdd={handleAddTask} 
+            />
+        )}
+
     </div>
   );
 }

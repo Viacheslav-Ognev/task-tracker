@@ -93,9 +93,9 @@ export default function TaskCard({
         </p>
         <p className=" text-blue-600 mt-1">
           {isOverdue && (
-            <p className=" text-red-800 border-red-600 font-bold mb-1">
-              "⚠️ Просрочено!"
-            </p>
+            <span className=" text-red-800 border-red-600 font-bold mb-1">
+              ⚠️ Просрочено!
+            </span>
           )}
           Следующее выполнение:{" "}
           {task.nextDate ? format(task.nextDate, "dd.MM.yyyy") : " Нет даты"}
