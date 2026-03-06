@@ -6,7 +6,7 @@ import { addDays } from "date-fns";
 // обьявляем типы для массива
 export type Task = {
   id: number;
-  title: string | number;
+  title: string;
   days: number;
   isDone: boolean;
   nextDate: number;
@@ -14,7 +14,6 @@ export type Task = {
 };
 
 function App() {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // главный масив
@@ -70,7 +69,7 @@ function App() {
   // изменяем задачу
   const handleEditeTask = (
     idTask: number,
-    newTitle: string | number,
+    newTitle: string,
     newDays: number
   ) => {
     const editTask = tasks.map((task) => {
@@ -82,10 +81,21 @@ function App() {
     setTasks(editTask);
   };
 
+  const handleResetCount = (idToReset:number) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === idToReset) {
+        return {...task, count: 0};
+      }
+
+      return task;
+    });
+    setTasks(updatedTasks)
+  }
+
   return (
     <div className=" pb-5 font-sans max-w-xl mx-auto">
-      <h1 className=" text-4xl text-blue-600 font-bold mb-8 text-center">
-        Трекер Задач 🎯
+      <h1 className=" text-4xl text-gray-900 font-bold my-8 text-reght">
+        Habit Tracker
       </h1>
 
       <div>
@@ -96,25 +106,26 @@ function App() {
             onDelete={handleDelete}
             onComplete={handleCompleteTask}
             onEdit={handleEditeTask}
+            onReset={handleResetCount}
           />
         ))}
       </div>
 
       <div className=" flex justify-center mb-8">
-        <button onClick={() => setIsModalOpen(true)}
-        className=" bg-blue-600 text-white font-bold py-2 px-20 rounded-full shadow-lg hover:scale-105 transition-transform"
-        >  
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className=" bg-black text-white font-bold py-2.5 px-20 w-full rounded-full shadow-lg hover:scale-110 transition-transform"
+        >
           + Add
         </button>
       </div>
 
-        {isModalOpen && (
-          <ModalAddTask 
-            onClose={() => setIsModalOpen(false)}
-            onAdd={handleAddTask} 
-            />
-        )}
-
+      {isModalOpen && (
+        <ModalAddTask
+          onClose={() => setIsModalOpen(false)}
+          onAdd={handleAddTask}
+        />
+      )}
     </div>
   );
 }

@@ -6,7 +6,8 @@ type TaskCardProps = {
   task: Task;
   onDelete: (id: number) => void;
   onComplete: (id: number) => void;
-  onEdit: (id: number, newTitle: string | number, newDays: number) => void;
+  onEdit: (id: number, newTitle: string, newDays: number) => void;
+  onReset: (id: number) => void;
 };
 
 export default function TaskCard({
@@ -14,6 +15,7 @@ export default function TaskCard({
   onDelete,
   onComplete,
   onEdit,
+  onReset,
 }: TaskCardProps) {
   const isOverdue = Date.now() > task.nextDate;
 
@@ -32,9 +34,9 @@ export default function TaskCard({
     <div
       className={`${
         isOverdue ? "bg-red-50 border-red-400" : "bg-white border-gray-300"
-      } border p-4 mb-3 rounded-lg  shadow-sm `}
+      } border py-3 px-8 mb-3 rounded-lg  shadow-sm `}
     >
-      <div className="flex justify-between items-start mb-2">
+      <div className="flex justify-between items-start mb-2 rounded-lg">
         {isEditing ? (
           <div className=" flex flex-col gap-2 w-full mr-4">
             <input
@@ -54,9 +56,9 @@ export default function TaskCard({
               />
               <button
                 onClick={handleSave}
-                className=" bg-green-500 text-white px-3 py-1 rounded-sm hover:bg-green-600"
+                className=" bg-black text-white px-6 py-1 rounded-lg hover:bg-black\80"
               >
-                Сохранить
+                Save
               </button>
             </div>
           </div>
@@ -64,7 +66,7 @@ export default function TaskCard({
           <div className=" flex-1">
             <h2 className=" text-xl font-bold text-gray-800"> {task.title}</h2>
             <p className=" text-sm text-gray-600 mb-1">
-              Повторять раз в {task.days} дн.
+              Repeat every {task.days} day.
             </p>
           </div>
         )}
@@ -72,40 +74,47 @@ export default function TaskCard({
         {!isEditing && (
           <div className=" flex flex-col gap-2">
             <button
-              className=" text-blue-500 hover:text-blue-700 font-bold text-right"
+              className=" text-blue-800 hover:text-blue-500 font-bold text-right"
               onClick={() => setIsEditing(true)}
             >
-              Изменить ✏️
+              Change ✏️
             </button>
 
             <button
-              className=" text-red-500 hover:text-red-700 font-bold text-right"
+              className=" text-red-900 hover:text-red-500 font-bold text-right"
               onClick={() => onDelete(task.id)}
             >
-              Удалить 🗑️
+              Delete 🗑️
             </button>
           </div>
         )}
       </div>
       <div className=" bg-blue-50 p-2 mt-3 mb-4 text-sm">
-        <p className=" text-blue-800 font-semibold">
-          Выполнено раз: {task.count}
+        <p className=" text-black font-semibold">
+          Completed: {task.count}
         </p>
-        <p className=" text-blue-600 mt-1">
+        {task.count > 0 &&
+        <button onClick={() => onReset(task.id)}
+        className=" ml-2 text-xs text-gray-400 hover:text-red-500 underline"
+        >
+          Reset Count
+        </button>
+        }
+        <p className=" text-black mt-1">
           {isOverdue && (
             <span className=" text-red-800 border-red-600 font-bold mb-1">
-              ⚠️ Просрочено!
+              ⚠️ Overdue!
             </span>
           )}
-          Следующее выполнение:{" "}
+            Next execution:{" "}
           {task.nextDate ? format(task.nextDate, "dd.MM.yyyy") : " Нет даты"}
         </p>
       </div>
       <button
-        className=" w-full bg-green-500 text-white font-bold py-2 rounded-sm hover:bg-green-600 transition-colors"
+        className=" w-full bg-black text-white font-bold py-2 rounded-lg hover:scale-105 transition-transform"
         onClick={() => onComplete(task.id)}
       >
-        Сделано! +1 ✅
+        Done! +1 ✅
       </button>
     </div>
   );
