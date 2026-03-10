@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import TaskCard from "./components/TaskCard";
 import ModalAddTask from "./components/ModalAddTask";
+import NotesScreen from "./components/NotesScreen";
 import { addDays } from "date-fns";
 
 // обьявляем типы для массива
@@ -14,6 +15,26 @@ export type Task = {
 };
 
 function App() {
+  const screen = ["Track", "Notes"];
+
+  const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
+
+  const handleNextScreen = () => {
+    if (currentScreenIndex === screen.length - 1) {
+      setCurrentScreenIndex(0);
+    } else {
+      setCurrentScreenIndex(currentScreenIndex + 1);
+    }
+  };
+
+  const handlePrevScreen = () => {
+    if (currentScreenIndex === 0) {
+      setCurrentScreenIndex(screen.length - 1);
+    } else {
+      setCurrentScreenIndex(currentScreenIndex - 1);
+    }
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // главный масив
@@ -81,44 +102,71 @@ function App() {
     setTasks(editTask);
   };
 
-  const handleResetCount = (idToReset:number) => {
+  const handleResetCount = (idToReset: number) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === idToReset) {
-        return {...task, count: 0};
+        return { ...task, count: 0 };
       }
 
       return task;
     });
-    setTasks(updatedTasks)
-  }
+    setTasks(updatedTasks);
+  };
 
   return (
-    <div className=" pb-5 font-sans max-w-xl mx-auto">
-      <h1 className=" text-4xl text-gray-900 font-bold my-8 text-reght">
-        Habit Tracker
-      </h1>
-
-      <div>
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onDelete={handleDelete}
-            onComplete={handleCompleteTask}
-            onEdit={handleEditeTask}
-            onReset={handleResetCount}
-          />
-        ))}
-      </div>
-
-      <div className=" flex justify-center mb-8">
+    <div className=" pb-5 font-sans max-w-xl mx-auto bg-black/5 rounded-2xl">
+      <div className=" flex justify-between items-center my-8 shadow-sm rounded-t-2xl">
         <button
-          onClick={() => setIsModalOpen(true)}
-          className=" bg-black text-white font-bold py-2.5 px-20 w-full rounded-full shadow-lg hover:scale-110 transition-transform"
+          className=" text-2xl p-2 hover:bg-gray-200 rounded-full transition-colors hover:scale-110"
+          onClick={handlePrevScreen}
         >
-          + Add
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+
+        </button>
+        <h1 className=" text-4xl text-gray-900 font-bold my-8 text-reght">
+          {screen[currentScreenIndex]}
+        </h1>
+        <button
+          className=" text-2xl p-2 hover:bg-gray-200 rounded-full transition-colors hover:scale-110"
+          onClick={handleNextScreen}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
         </button>
       </div>
+
+      {currentScreenIndex === 0 && (
+        <div className=" px-3">
+          <div>
+            {tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onDelete={handleDelete}
+                onComplete={handleCompleteTask}
+                onEdit={handleEditeTask}
+                onReset={handleResetCount}
+              />
+            ))}
+          </div>
+          <div className=" flex justify-center mb-8">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className=" bg-black text-white font-bold py-2.5 px-20 w-130 rounded-full shadow-lg hover:scale-105 transition-transform"
+            >
+              + Add
+            </button>
+          </div>
+        </div>
+      )}
+
+      {currentScreenIndex === 1 &&(
+        <NotesScreen/>
+      )}
+
 
       {isModalOpen && (
         <ModalAddTask
