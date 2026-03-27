@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import type { Task } from "../App";
+import type { Task } from "./TaskScreen";
 import { useState } from "react";
 
 type TaskCardProps = {
@@ -32,31 +32,30 @@ export default function TaskCard({
   return (
     // общий контейнер
     <div
-      className={`${
-        isOverdue ? "bg-red-50 border-red-400" : "bg-white border-gray-300"
-      } border py-3 px-8 mb-3 rounded-lg  shadow-sm `}
+      className={` p-5 mb-4 rounded-3xl shadow-sm
+       ${isOverdue ? "bg-red-50 " : "bg-white "}`}
     >
-      <div className="flex justify-between items-start mb-2 rounded-lg">
+      <div className="flex justify-between items-start mb-3">
         {isEditing ? (
           <div className=" flex flex-col gap-2 w-full mr-4">
             <input
               type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              className=" border border-gray-400 px-2 py-1 rounded-sm"
+              className=" w-full font-bold text-lg outline-none border-b border-gray-200 bg-transparent pb-1"
             />
 
-            <div className=" flex gap-2">
+            <div className=" flex gap-2 mt-2">
               <input
                 type="number"
                 min="1"
                 value={editDays}
                 onChange={(e) => setEditDays(Number(e.target.value))}
-                className=" border border-gray-400 px-2 py-1 rounded-sm w-20"
+                className=" w-20 outline-none border-b border-gray-200 bg-transparent pb-1"
               />
               <button
                 onClick={handleSave}
-                className=" bg-black text-white px-6 py-1 rounded-lg hover:bg-black\80"
+                className=" bg-black text-white text-sm font-bold py-2 px-4 rounded-xl hover:bg-gray-800"
               >
                 Save
               </button>
@@ -64,58 +63,69 @@ export default function TaskCard({
           </div>
         ) : (
           <div className=" flex-1">
-            <h2 className=" text-xl font-bold text-gray-800"> {task.title}</h2>
-            <p className=" text-sm text-gray-600 mb-1">
+            <h2 className=" font-semibold text-xl text-gray-900 leading-snug">
+              {task.title}
+            </h2>
+            <p className=" text-sm text-gray-500 mt-1">
               Repeat every {task.days} day.
             </p>
           </div>
         )}
 
         {!isEditing && (
-          <div className=" flex flex-col gap-2">
+          <div className=" flex flex-col items-center">
             <button
-              className=" text-blue-800 hover:text-blue-500 font-bold text-right"
+              className=" hover:scale-105 ml-2 p-1 text-xl"
               onClick={() => setIsEditing(true)}
             >
-              Change ✏️
+              ✏️
             </button>
 
             <button
-              className=" text-red-900 hover:text-red-500 font-bold text-right"
+              className=" hover:scale-105 ml-2 p-1 text-xl"
               onClick={() => onDelete(task.id)}
             >
-              Delete 🗑️
+              🗑️
             </button>
           </div>
         )}
       </div>
-      <div className=" bg-blue-50 p-2 mt-3 mb-4 text-sm">
-        <p className=" text-black font-semibold">
-          Completed: {task.count}
-        </p>
-        {task.count > 0 &&
-        <button onClick={() => onReset(task.id)}
-        className=" ml-2 text-xs text-gray-400 hover:text-red-500 underline"
-        >
-          Reset Count
-        </button>
-        }
-        <p className=" text-black mt-1">
-          {isOverdue && (
-            <span className=" text-red-800 border-red-600 font-bold mb-1">
-              ⚠️ Overdue!
+
+      <div className=" bg-[#F2F2F7] p-2 mt-4 mb-4 rounded-2xl text-sm flex justify-between items-center">
+        <div>
+          <p className=" text-gray-800 mb-1 font-semibold">
+            Completed: {task.count}
+            {task.count > 0 && (
+              <button
+                onClick={() => onReset(task.id)}
+                className=" ml-3 text-xs text-gray-400 hover:text-red-500 underline"
+              >
+                Reset Count
+              </button>
+            )}
+          </p>
+          <p className=" text-gray-600">
+            {isOverdue && (
+              <span className=" text-red-500 font-bold mr-2"> Overdue! </span>
+            )}
+            Next execution:
+            <span className=" font-medium text-black">
+              {task.nextDate
+                ? format(task.nextDate, "dd.MM.yyyy")
+                : " Нет даты"}
             </span>
-          )}
-            Next execution:{" "}
-          {task.nextDate ? format(task.nextDate, "dd.MM.yyyy") : " Нет даты"}
-        </p>
+          </p>
+        </div>
       </div>
-      <button
-        className=" w-full bg-black text-white font-bold py-2 rounded-lg hover:scale-105 transition-transform"
-        onClick={() => onComplete(task.id)}
-      >
-        Done! +1 ✅
-      </button>
+
+      <div className=" flex justify-center">
+        <button
+          className=" w-5/6 bg-black text-white font-bold py-3.5 rounded-full shadow-sm hover:scale-102 hover:bg-black/90 transition-transform"
+          onClick={() => onComplete(task.id)}
+        >
+          Done!
+        </button>
+      </div>
     </div>
   );
 }
