@@ -8,7 +8,7 @@ function App() {
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
 
   return (
-    <div className=" px-12 bg-[#F2F2F7] min-h-screen pb-28 pt-12 font-sans">
+    <div className=" font-sans">
       {currentScreenIndex === 0 && (
         <div className=" animate-fade-in">
           <TaskScreen />
@@ -53,7 +53,7 @@ function App() {
             : "text-gray-400 hover:text-gray-600"
         }`}
         >
-          <span className=" text-2xl"> 📋 </span>
+          <span className=" text-2xl"> 📝 </span>
           <span className=" text-[10px] font-bold"> Notes </span>
         </button>
 

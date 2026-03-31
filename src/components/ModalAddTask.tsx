@@ -17,7 +17,7 @@ export default function ModalAddTask({ onClose, onAdd }: ModalProps) {
   };
 
   return (
-    <div className=" fixed inset-0 z-50 bg-black\40 flex items-end justify-center backdrop-blur-sm sm:items-center p-4">
+    <div className=" fixed inset-0 z-50 bg-black/40 flex items-end justify-center backdrop-blur-sm sm:items-center p-4">
       <div className=" bg-[#F2F2F7] p-6 rounded-4xl shadow-2xl w-full max-w-md relative animate-fade-in-up">
         <button
           className=" absolute top-4 right-5 text-gray-400 hover:text-gray-800 font-bold text-xl p-2"
