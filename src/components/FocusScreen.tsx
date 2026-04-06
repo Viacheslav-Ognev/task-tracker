@@ -96,7 +96,7 @@ export default function FocusScreen() {
       </h1>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="relative rounded-full w-72 h-72 outline-none mb-12 hover:scale-102 transition-transform duration-300"
+        className="relative rounded-full w-72 h-72 outline-none mb-12 hover:scale-102 transition-transform duration-300 cursor-pointer"
 
       >
         <div 
@@ -143,7 +143,7 @@ export default function FocusScreen() {
         <button
           onClick={toggleTimer}
           className=" w-20 h-20 bg-black text-white rounded-full flex items-center justify-center text-3xl shadow-lg hover:bg-gray-800 
-                transition-transform hover:scale-105"
+                transition-transform hover:scale-105 cursor-pointer"
         >
           {isActive ?      
           <span>  
@@ -162,7 +162,7 @@ export default function FocusScreen() {
 
         <button
           onClick={resetTimer}
-          className=" text-gray-600 rounded-full flex items-center justify-center text-xl hover:scale-105 transition-transform"
+          className=" text-gray-600 rounded-full flex items-center justify-center text-xl hover:scale-105 transition-transform cursor-pointer"
         >
           Reset
         </button>

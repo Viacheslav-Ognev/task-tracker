@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalAddTask from "./ModalAddTask";
-import { addDays } from "date-fns";
+import { addDays, getDay } from "date-fns";
 import TaskCard from "./TaskCard";
 
 // обьявляем типы для массива
@@ -11,7 +11,27 @@ export type Task = {
   isDone: boolean;
   nextDate: number;
   count: number;
+  mode: "interval" | "wekdays";
+  selectedDays: number[];
 };
+
+const calculateNextDays = (baseDate: Date,   mode: "interval" | "wekdays", intervalDays: number, selectedDays: number[] ) => {
+  if(mode === 'interval') {
+    return addDays(baseDate, intervalDays).getTime()
+  }
+  if(selectedDays.length === 0) {
+    return baseDate.getTime();
+  }
+  for ( let i=1; i<=7; i++) {
+    const futureDate = addDays(baseDate, i);
+    const dayOfWeek = getDay(futureDate);
+
+    if (selectedDays.includes(dayOfWeek)) {
+      return futureDate.getTime();
+    }
+  }
+  return baseDate.getTime();
+}
 
 export default function TaskScreen() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,14 +55,16 @@ export default function TaskScreen() {
   };
 
   // функция добавления задания с очищением инпута
-  const handleAddTask = (newTitle: string, newDays: number) => {
+  const handleAddTask = (newTitle: string, newDays: number, mode: "interval" | "wekdays", selectedDays: number[] ) => {
     const newTask = {
       count: 0,
       id: Date.now(),
       title: newTitle,
       days: newDays,
       isDone: false,
-      nextDate: addDays(new Date(), newDays).getTime(),
+      mode: mode,
+      selectedDays: selectedDays,
+      nextDate: calculateNextDays(new Date(), mode, newDays, selectedDays),
     };
     setTasks([...tasks, newTask]);
   };
@@ -54,7 +76,7 @@ export default function TaskScreen() {
         return {
           ...task,
           count: task.count + 1,
-          nextDate: addDays(task.nextDate, Number(task.days)).getTime(),
+          nextDate: calculateNextDays(new Date(task.nextDate), task.mode, task.days, task.selectedDays),
         };
       }
       return task;

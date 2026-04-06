@@ -3,6 +3,7 @@ import NotesScreen from "./components/NotesScreen";
 import FocusScreen from "./components/FocusScreen";
 import TaskScreen from "./components/TaskScreen";
 
+
 function App() {
   const screen = ["Habit Tracker", "Notes", "Focus Timer"];
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
@@ -33,7 +34,7 @@ function App() {
       >
         <button
           onClick={() => setCurrentScreenIndex(0)}
-          className={` flex flex-col items-center gap-1 transition-colors 
+          className={` flex flex-col items-center gap-1 transition-colors cursor-pointer
         ${
           currentScreenIndex === 0
             ? "text-black"
@@ -46,7 +47,7 @@ function App() {
 
         <button
           onClick={() => setCurrentScreenIndex(1)}
-          className={` flex flex-col items-center gap-1 transition-colors 
+          className={` flex flex-col items-center gap-1 transition-colors cursor-pointer
         ${
           currentScreenIndex === 1
             ? "text-black"
@@ -59,7 +60,7 @@ function App() {
 
         <button
           onClick={() => setCurrentScreenIndex(2)}
-          className={` flex flex-col items-center gap-1 transition-colors 
+          className={` flex flex-col items-center gap-1 transition-colors cursor-pointer
         ${
           currentScreenIndex === 2
             ? "text-black"
