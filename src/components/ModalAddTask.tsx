@@ -34,7 +34,7 @@ export default function ModalAddTask({ onClose, onAdd }: ModalProps) {
       return
     }
 
-    onAdd(inputValue, daysValue, mode, selectedDays);
+    onAdd(inputValue, mode, daysValue, selectedDays);
     onClose();
   };
 

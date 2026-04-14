@@ -6,9 +6,15 @@ type TaskCardProps = {
   task: Task;
   onDelete: (id: number) => void;
   onComplete: (id: number) => void;
-  onEdit: (id: number, newTitle: string, newDays: number) => void;
+  onEdit: (id: number, newTitle: string, newMode: "interval" | "weekdays", newDays: number, newSelectDays: number[], ) => void;
   onReset: (id: number) => void;
 };
+
+const WEEKDAYS =[
+  {id: 1, label:'Mo'},{id: 2, label:'Tu'},
+  {id: 3, label:'We'},{id: 4, label:'Th'},
+  {id: 5, label:'Fr'},{id: 6, label:'Sa'},{id: 0, label:'Su'}
+];
 
 export default function TaskCard({
   task,
@@ -22,13 +28,31 @@ export default function TaskCard({
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDays, setEditDays] = useState(task.days);
+  const [editMode, setEditMode] = useState<'interval' | 'weekdays'>(task.mode || 'interval');
+  const [editSelectDays, setEditSelectDays] = useState<number[]>(task.selectedDays || []);
 
   const handleSave = () => {
-    onEdit(task.id, String(editTitle), Number(editDays));
-
+    if ( editMode === 'weekdays' && editSelectDays.length === 0) {
+      alert("Please select at least one day!");
+      return
+    }
+    onEdit(task.id, String(editTitle), editMode, Number(editDays), editSelectDays);
     setIsEditing(false);
   };
 
+  const toggleEditDay = (id:number) => {
+    if (editSelectDays.includes(id)) {
+      setEditSelectDays(editSelectDays.filter(dayId => dayId !== id));
+    } else {
+      setEditSelectDays([...editSelectDays, id])
+    }
+  }
+
+  const formatSelectDays = (daysArray: number[]) => {
+    if (!daysArray || daysArray.length === 0) return "No days selected";
+
+    return daysArray.map(dayId => WEEKDAYS.find(w => w.id === dayId)?.label).join(', ');
+  }
   return (
     // общий контейнер
     <div
@@ -45,19 +69,69 @@ export default function TaskCard({
               className=" w-full font-bold text-lg outline-none border-b border-gray-200 bg-transparent pb-1"
             />
 
-            <div className=" flex gap-2 mt-2">
-              <input
-                type="number"
-                min="1"
-                value={editDays}
-                onChange={(e) => setEditDays(Number(e.target.value))}
-                className=" w-20 outline-none border-b border-gray-200 bg-transparent pb-1"
-              />
+            <div className=" relative flex bg-gray-100 p-1 rounded-xl">
+                <div
+                  className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-xl bg-white shadow-sm transition-transform duration-300 ease-in-out
+                    ${editMode === 'weekdays' ? 'translate-x-full' : 'translate-x-0'}`}
+                />
+
+                <button
+                onClick={() => setEditMode('interval')}
+                className={` relative flex-1 py-2 text-sm font-bold transition-colors cursor-pointer z-10 duration-300 outline-none
+                          ${editMode === 'interval' ? 'text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  Interval
+                </button>
+
+                <button
+                onClick={() => setEditMode('weekdays')}
+                className={` relative flex-1 py-2 text-sm font-bold transition-colors cursor-pointer z-10 duration-300 outline-none
+                          ${editMode === 'weekdays' ? 'text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  Specific Days
+                </button>
+            </div>
+
+            {editMode === 'interval' ? (
+              <div className=" flex items-center gap-2">
+                <span className=" text-sm text-gray-800 font-medium">Every</span>
+                <input 
+                  type="number"
+                  placeholder='1'
+                  onChange={(e) => setEditDays(Number(e.target.value))}
+                  className=" w-11 text-center font-bold outline-none border-b border-gray-200 bg-transparent pb-1" 
+                />
+                <span className=" text-sm text-gray-800 font-medium"> days</span>
+              </div>
+            ) : (
+              <div className=" flex justify-between gap-1">
+                {WEEKDAYS.map((day) => (
+                  <button
+                    key={day.id}
+                    onClick={() => toggleEditDay(day.id)}
+                    className= {` w-7.5 h-7.5 rounded-full font-bold text-10px transition-colors 
+                                ${editSelectDays.includes(day.id) ? 'bg-black/60 text-white shadow-sm ' : 'bg-gray-100 text-gray-500'
+                                }`}
+                  >
+                    {day.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className=" flex gap-2 mt-1">
               <button
                 onClick={handleSave}
-                className=" bg-black text-white text-sm font-bold py-2 px-4 rounded-xl hover:bg-gray-800"
+                className=" cursor-pointer flex-1 bg-black text-white text-sm font-bold py-2 rounded-xl hover:bg-black/90"
               >
                 Save
+              </button>
+
+              <button 
+                onClick={() => setIsEditing(false)}
+                className=" cursor-pointer flex-1 bg-gray-100 text-gray-600 text-sm font-bold py-2 rounded-xl hover:bg-gray-200"
+              >
+                Cancel
               </button>
             </div>
           </div>
@@ -67,7 +141,8 @@ export default function TaskCard({
               {task.title}
             </h2>
             <p className=" text-sm text-gray-500 mt-1">
-              Repeat every {task.days} day.
+              {task.mode === 'weekdays' 
+              ? `On ${formatSelectDays(task.selectedDays)}` : `Repeat every ${task.days} days`}
             </p>
           </div>
         )}

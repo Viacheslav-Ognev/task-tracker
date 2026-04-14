@@ -11,11 +11,11 @@ export type Task = {
   isDone: boolean;
   nextDate: number;
   count: number;
-  mode: "interval" | "wekdays";
+  mode: "interval" | "weekdays";
   selectedDays: number[];
 };
 
-const calculateNextDays = (baseDate: Date,   mode: "interval" | "wekdays", intervalDays: number, selectedDays: number[] ) => {
+const calculateNextDays = (baseDate: Date,   mode: "interval" | "weekdays", intervalDays: number, selectedDays: number[] ) => {
   if(mode === 'interval') {
     return addDays(baseDate, intervalDays).getTime()
   }
@@ -55,7 +55,7 @@ export default function TaskScreen() {
   };
 
   // функция добавления задания с очищением инпута
-  const handleAddTask = (newTitle: string, newDays: number, mode: "interval" | "wekdays", selectedDays: number[] ) => {
+  const handleAddTask = (newTitle: string, mode: "interval" | "weekdays", newDays: number,  selectedDays: number[] ) => {
     const newTask = {
       count: 0,
       id: Date.now(),
@@ -88,11 +88,18 @@ export default function TaskScreen() {
   const handleEditeTask = (
     idTask: number,
     newTitle: string,
-    newDays: number
+    newMode: "interval" | "weekdays",
+    newDays: number,
+    newSelectDays: number[]
   ) => {
     const editTask = tasks.map((task) => {
       if (task.id === idTask) {
-        return { ...task, title: newTitle, days: newDays };
+        return { ...task, 
+                title: newTitle, 
+                days: newDays,
+                mode: newMode,
+                selectedDays: newSelectDays,
+                nextDate: calculateNextDays(new Date(), newMode, newDays, newSelectDays) };
       }
       return task;
     });
@@ -131,7 +138,7 @@ export default function TaskScreen() {
       <div className=" flex justify-center mt-4">
         <button
           onClick={() => setIsModalOpen(true)}
-          className=" bg-black text-white  px-12 w-full font-semibold py-4 rounded-3xl shadow-sm hover:bg-black/90 hover:scale-102 transition-transform"
+          className=" cursor-pointer bg-black text-white  px-12 w-full font-semibold py-4 rounded-3xl shadow-sm hover:bg-black/90 hover:scale-102 transition-transform"
         >
           + Add
         </button>

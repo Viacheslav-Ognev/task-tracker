@@ -5,7 +5,7 @@ import TaskScreen from "./components/TaskScreen";
 
 
 function App() {
-  const screen = ["Habit Tracker", "Notes", "Focus Timer"];
+  //const screen = ["Habit Tracker", "Notes", "Focus Timer"];
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
 
   return (
