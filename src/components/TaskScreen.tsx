@@ -15,6 +15,10 @@ export type Task = {
   selectedDays: number[];
 };
 
+type TaskScreenProps = {
+  onTaskCompleted: () => void;
+};
+
 const calculateNextDays = (baseDate: Date,   mode: "interval" | "weekdays", intervalDays: number, selectedDays: number[] ) => {
   if(mode === 'interval') {
     return addDays(baseDate, intervalDays).getTime()
@@ -33,7 +37,7 @@ const calculateNextDays = (baseDate: Date,   mode: "interval" | "weekdays", inte
   return baseDate.getTime();
 }
 
-export default function TaskScreen() {
+export default function TaskScreen({onTaskCompleted}: TaskScreenProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -82,6 +86,7 @@ export default function TaskScreen() {
       return task;
     });
     setTasks(updatedTasks);
+    onTaskCompleted();
   };
 
   // изменяем задачу
